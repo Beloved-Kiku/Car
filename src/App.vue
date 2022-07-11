@@ -1,32 +1,36 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+<div style="height:100%">
+<router-view></router-view>
+</div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+export default {
+  name:'app',
+  data() {
+    return {
+      property: 'value',
+    };
+  },
+  mounted(){
+    console.log(this);
   }
 }
+</script>
+
+<style lang="less">
+/*初始化 配置 该项目特殊APP只是用来挂载各路由 可以在App里进行全局Css 初始化*/
+html ,body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: bold;
+  .el-button{
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+}
+
 </style>

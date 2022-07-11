@@ -1,27 +1,62 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
 Vue.use(VueRouter)
+    // 防止路由Promise报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+        return originalPush
+            .call(this, location)
+            .catch(err => err)
+    }
+    //路由 懒加载
+const Login = () => {
+    return import ('@/views/Login')
+}
+const Reg = () => {
+    return import ('@/views/Reg')
+}
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
-
+const home = () => {
+    return import ('@/views/home')
+}
+const Main = () => {
+    return import ('@/views/home/Main')
+}
+const Menus = () => {
+    return import ('@/views/home/Menus')
+}
+const ArtCate = () => {
+    return import ('@/views/home/Menus/art-cate')
+}
 const router = new VueRouter({
-  routes
+        routes: [{
+            path: '/Reg',
+            component: Reg
+        }, {
+            redirect: '/',
+            path: '/home',
+            component: home,
+            children: [{
+                path: '',
+                components: {
+                    Main,
+                    Menus,
+                    ArtCate
+                }
+            }, ]
+        }, {
+            path: '/Login',
+            component: Login
+        }]
+    })
+    //创建全局路由守卫 判断用户是否携带Token进入 如果用户没有Token 则只能取登录或者注册页面 白名单形式 完成路由跳转
+const whiteList = ['/Login', '/Reg']
+router.beforeEach((to, from, next) => {
+    next()
+    if (!localStorage.getItem('Token') && !whiteList.includes(to.path)) {
+        next('/Login')
+    } else {
+        next()
+    }
 })
-
 export default router
